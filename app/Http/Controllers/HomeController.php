@@ -131,7 +131,7 @@ class HomeController extends Controller
         if (count($data) > 0) {
             foreach ($data as $data) {
                 $title = $data->title;
-                $body = $data->body . " " . date('Y-m-d H:i:s');
+                $body = $data->body;
                 $key = $data->notification_key;
                 $image = $data->image;
                 $click_action = $data->short_url;
