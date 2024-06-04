@@ -25,6 +25,6 @@ class NotificationHistory extends Model
     ];
     public function shorturl_id()
     {
-        return $this->belongsTo(ShortUrl::class, 'short_url', 'default_short_url')->with('visitcheck');
+        return $this->belongsTo(ShortUrl::class, 'short_url', 'default_short_url')->with('visitcheck:id,short_url_id');
     }
 }
