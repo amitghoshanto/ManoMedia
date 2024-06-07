@@ -68,7 +68,7 @@ class DashboardController extends Controller
 
 
         $name = $request->category_data;
-        $keys = NotificationKey::where($category, $name)->get();
+        $keys = NotificationKey::where($category, $name)->where('type',1)->get();
 
         foreach ($keys as $key => $value) {
             $secret_key = $value->secret_key;
