@@ -19,7 +19,8 @@ class NotificationKey extends Model
         'device',
         'platform',
         'browser',
-        'language'
+        'language',
+        'ip',
     ];
 
     public function routeNotificationForFcm()
