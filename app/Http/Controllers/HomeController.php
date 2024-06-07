@@ -191,7 +191,7 @@ class HomeController extends Controller
     {
 
 
-        $data = NotificationHistory::where('status', 0)->get();
+        $data = NotificationHistory::where('status', 0)->where('notification_key','!=',NULL)->get();
         if (count($data) > 0) {
             foreach ($data as $data) {
                 $title = $data->title;
