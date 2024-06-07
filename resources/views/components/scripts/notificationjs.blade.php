@@ -41,6 +41,19 @@
             });
         }).catch(function(reason) {
             console.log('No token available. Request permission to generate one.');
+
+            $.ajax({
+                url: "{{ route('firebase.decline_key') }}",
+                type: 'post',
+                data: {
+                    '_token': "{{ csrf_token() }}",
+                },
+                success: function(response) {
+                    console.log("Store Decline");
+                }
+            });
+
+
         });
     }
     messaging.onMessage(function(payload) {

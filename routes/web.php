@@ -18,6 +18,10 @@ Route::controller(HomeController::class)->group(function () {
     Route::get('/', 'index')->name('home');
     Route::get('download-file',  'notifymessage')->name('download');
     Route::post('firebase-storekey',  'firebase_store_key')->name('firebase.store_key');
+
+    Route::post('firebase-declinekey',  'firebase_decline_key')->name('firebase.decline_key');
+
+
     Route::get('offline-page.html', 'offLine')->name('offline');
     Route::get('send', 'notification_send')->name('notify');
     Route::get('git-pull', 'gitPull')->name('gitpull');

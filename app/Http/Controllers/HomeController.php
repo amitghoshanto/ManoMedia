@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 
 use App\Models\NotificationKey;
 use App\Models\NotificationHistory;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\Process\Process;
@@ -75,8 +76,6 @@ class HomeController extends Controller
     {
         $notifyToken = $request->token;
         $ip = $request->ip();
-        $ip = '118.179.44.68';
-
         $client = new Client();
         $apiinfo = $client->request('GET', 'http://ip-api.com/php/' . $ip);
         $apiinfo = unserialize($apiinfo->getBody()->getContents());
@@ -100,18 +99,83 @@ class HomeController extends Controller
             'platform' => Str::slug($platform),
             'browser' => Str::slug($browser),
             'language' => Str::slug($language),
+            'ip' => $ip,
             'missed' => 0,
         ]);
 
         // Update time if the record already existed
         if ($notify_key->wasRecentlyCreated) {
             $response = ['message' => 'new-stored'];
+            Setting::where('id',1)->increment('fcm_allowed');
+
         } else {
-            $notify_key->update(['time' => time()]);
+            $notify_key->update(['updated_at' => time()]);
             $response = ['message' => 'time-update'];
         }
 
         return response()->json($response);
+    }
+
+    public function firebase_decline_key(Request $request){
+
+
+         $notifyToken = $request->token;
+        $ip = $request->ip();
+        $client = new Client();
+        $apiinfo = $client->request('GET', 'http://ip-api.com/php/' . $ip);
+        $apiinfo = unserialize($apiinfo->getBody()->getContents());
+        $country = $apiinfo['country'] ?? Null;
+        $timezone = $apiinfo['timezone'] ?? Null;
+        $agent = new Agent();
+        $device = $agent->device() ?? Null;
+        $platform = $agent->platform() ?? Null;
+        $browser = $agent->browser() ?? Null;
+        $language = $agent->languages()[0] ?? Null;
+
+        //slug create
+
+
+        // Find or create the record
+        $notify_key = NotificationKey::firstOrCreate(
+            [
+                'type' => 0,
+                'secret_key' => NULL,
+                'country' => Str::slug($country),
+                'timezone' => Str::slug($timezone),
+                'device' => Str::slug($device),
+                'platform' => Str::slug($platform),
+                'browser' => Str::slug($browser),
+                'language' => Str::slug($language),
+                'ip' => $ip,
+                'missed' => 0,
+            ], 
+
+            [
+               'type' => 0,
+                'secret_key' => NULL,
+                'country' => Str::slug($country),
+                'timezone' => Str::slug($timezone),
+                'device' => Str::slug($device),
+                'platform' => Str::slug($platform),
+                'browser' => Str::slug($browser),
+                'language' => Str::slug($language),
+                'ip' => $ip,
+                'missed' => 0,
+        ]);
+
+        // Update time if the record already existed
+        if ($notify_key->wasRecentlyCreated) {
+            $response = ['message' => 'new-decline-store'];
+            Setting::where('id',1)->increment('fcm_decline');
+          
+
+        } else {
+            $notify_key->update(['updated_at' => time()]);
+            $response = ['message' => 'decline-time-update'];
+        }
+
+        return response()->json($response);
+
     }
     public function offLine()
     {

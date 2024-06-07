@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('notification_key', function (Blueprint $table) {
             $table->id();
-            $table->string('secret_key', 400);
+            $table->string('secret_key', 400)->nullable();
             $table->tinyInteger('missed')->default(0);
             $table->tinyInteger('type')->default(1)->comment('1 = active, 0 = deactivate');
             $table->string('country', 100)->nullable();
@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('platform', 100)->nullable();
             $table->string('browser', 100)->nullable();
             $table->string('language', 100)->nullable();
+            $table->string('ip', 100)->nullable();
             $table->timestamps(0);
         });
     }

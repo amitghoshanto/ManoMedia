@@ -19,7 +19,11 @@ class DashboardController extends Controller
             'keywords' => '',
 
         ];
-        return view('admin.dashboard', compact('meta_tag'));
+
+        $count_allowed = NotificationKey::where('type',1)->count();
+        $count_decline = NotificationKey::where('type',0)->count();
+
+        return view('admin.dashboard', compact('meta_tag','count_allowed','count_decline'));
     }
     public function send_notification()
     {
@@ -31,6 +35,7 @@ class DashboardController extends Controller
         // dump($category);
 
         $items = NotificationKey::select($category, DB::raw('COUNT(*) as count'))
+            ->where('type',1)
             ->groupBy($category)
             ->get();
 
@@ -97,7 +102,7 @@ class DashboardController extends Controller
             'keywords' => '',
 
         ];
-        $count = NotificationKey::count();
+        $count = NotificationKey::where('type',1)->count();
 
 
         return view('admin.storenotification', compact('meta_tag', 'count'));
@@ -113,7 +118,7 @@ class DashboardController extends Controller
             'full_url' => 'required|url',
         ]);
 
-        $keys = NotificationKey::all();
+        $keys = NotificationKey::where('type',1)->get();
 
         foreach ($keys as $key => $value) {
             $secret_key = $value->secret_key;
