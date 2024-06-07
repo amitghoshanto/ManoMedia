@@ -7,11 +7,12 @@ use App\Models\NotificationKey;
 use App\Models\NotificationHistory;
 use Illuminate\Support\Facades\Hash;
 use App\Notifications\PushNotification;
-use Google\Cloud\Storage\Notification as StorageNotification;
 use Kreait\Firebase\Contract\Messaging;
 use NotificationChannels\Fcm\FcmChannel;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
+use Kreait\Firebase\Messaging\WebPushConfig;
+use Google\Cloud\Storage\Notification as StorageNotification;
 
 
 class TestController extends Controller
@@ -27,19 +28,16 @@ class TestController extends Controller
             $key = $data->notification_key;
             $image = $data->image;
             $click_action = $data->short_url;
-
-
             $notification = Notification::fromArray([
                 'title' => $title,
                 'body' => $body,
                 'image' => $image,
-                "click_action" => $click_action,
-                "url" => $click_action,
-                "link" => $click_action,
             ]);
-
+            $webPushConfig = WebPushConfig::fromArray([
+                'fcm_options' => ['link' => $click_action]
+            ]);
             $message = CloudMessage::withTarget('token', $key)
-                ->withNotification($notification);
+                ->withNotification($notification)->withWebPushConfig($webPushConfig);
 
             try {
                 $fcm->send($message);

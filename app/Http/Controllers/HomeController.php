@@ -79,6 +79,13 @@ class HomeController extends Controller
         $client = new Client();
         $apiinfo = $client->request('GET', 'http://ip-api.com/php/' . $ip);
         $apiinfo = unserialize($apiinfo->getBody()->getContents());
+        if ($apiinfo) {
+            $country = $apiinfo['country'] ?? 'Null';
+            $timezone = $apiinfo['timezone'] ?? 'Null';
+        } else {
+            $country = Null;
+            $timezone = Null;
+        }
         $country = $apiinfo['country'] ?? Null;
         $timezone = $apiinfo['timezone'] ?? Null;
         $agent = new Agent();
@@ -106,8 +113,7 @@ class HomeController extends Controller
         // Update time if the record already existed
         if ($notify_key->wasRecentlyCreated) {
             $response = ['message' => 'new-stored'];
-            Setting::where('id',1)->increment('fcm_allowed');
-
+            Setting::where('id', 1)->increment('fcm_allowed');
         } else {
             $notify_key->update(['updated_at' => time()]);
             $response = ['message' => 'time-update'];
@@ -116,16 +122,22 @@ class HomeController extends Controller
         return response()->json($response);
     }
 
-    public function firebase_decline_key(Request $request){
+    public function firebase_decline_key(Request $request)
+    {
 
 
-         $notifyToken = $request->token;
+        $notifyToken = $request->token;
         $ip = $request->ip();
         $client = new Client();
         $apiinfo = $client->request('GET', 'http://ip-api.com/php/' . $ip);
         $apiinfo = unserialize($apiinfo->getBody()->getContents());
-        $country = $apiinfo['country'] ?? Null;
-        $timezone = $apiinfo['timezone'] ?? Null;
+        if ($apiinfo) {
+            $country = $apiinfo['country'] ?? Null;
+            $timezone = $apiinfo['timezone'] ?? Null;
+        } else {
+            $country = Null;
+            $timezone = Null;
+        }
         $agent = new Agent();
         $device = $agent->device() ?? Null;
         $platform = $agent->platform() ?? Null;
@@ -148,10 +160,10 @@ class HomeController extends Controller
                 'language' => Str::slug($language),
                 'ip' => $ip,
                 'missed' => 0,
-            ], 
+            ],
 
             [
-               'type' => 0,
+                'type' => 0,
                 'secret_key' => NULL,
                 'country' => Str::slug($country),
                 'timezone' => Str::slug($timezone),
@@ -161,21 +173,19 @@ class HomeController extends Controller
                 'language' => Str::slug($language),
                 'ip' => $ip,
                 'missed' => 0,
-        ]);
+            ]
+        );
 
         // Update time if the record already existed
         if ($notify_key->wasRecentlyCreated) {
             $response = ['message' => 'new-decline-store'];
-            Setting::where('id',1)->increment('fcm_decline');
-          
-
+            Setting::where('id', 1)->increment('fcm_decline');
         } else {
             $notify_key->update(['updated_at' => time()]);
             $response = ['message' => 'decline-time-update'];
         }
 
         return response()->json($response);
-
     }
     public function offLine()
     {
@@ -191,7 +201,7 @@ class HomeController extends Controller
     {
 
 
-        $data = NotificationHistory::where('status', 0)->where('notification_key','!=',NULL)->get();
+        $data = NotificationHistory::where('status', 0)->where('notification_key', '!=', NULL)->get();
         if (count($data) > 0) {
             foreach ($data as $data) {
                 $title = $data->title;
