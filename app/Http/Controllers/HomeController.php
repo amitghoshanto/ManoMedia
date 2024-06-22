@@ -3,19 +3,20 @@
 namespace App\Http\Controllers;
 
 use GuzzleHttp\Client;
+use App\Models\Setting;
 use Illuminate\Support\Str;
 use Jenssegers\Agent\Agent;
-use Illuminate\Http\Request;
 
+use Illuminate\Http\Request;
 use App\Models\NotificationKey;
 use App\Models\NotificationHistory;
-use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\Process\Process;
 use Kreait\Firebase\Contract\Messaging;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
+use Kreait\Firebase\Messaging\WebPushConfig;
 
 
 class HomeController extends Controller
@@ -206,22 +207,23 @@ class HomeController extends Controller
             foreach ($data as $data) {
                 $title = $data->title;
                 $body = $data->body;
-                $key = $data->notification_key;
+                $token = $data->notification_key;
                 $image = $data->image;
                 $click_action = $data->short_url;
 
-
-                $notification = Notification::fromArray([
-                    'title' => $title,
-                    'body' => $body,
-                    'image' => $image,
-                    "click_action" => $click_action,
-                    "url" => $click_action,
-                    "link" => $click_action,
+                $webPushConfig = WebPushConfig::fromArray([
+                    'notification' => [
+                        'title' => $title,
+                        'body' => $body,
+                        'icon' => $image,
+                    ],
+                    'fcm_options' => [
+                        'link' => $click_action,
+                    ],
                 ]);
 
-                $message = CloudMessage::withTarget('token', $key)
-                    ->withNotification($notification);
+                $message = CloudMessage::withTarget('token', $token)
+                    ->withWebPushConfig($webPushConfig);
 
                 try {
                     $fcm->send($message);
@@ -232,8 +234,37 @@ class HomeController extends Controller
 
                     echo 'error sending notification check bug';
                     NotificationHistory::where('id', $data->id)->update(['status' => 2]);
-                    // dump($th);
+                    dump($th);
                 }
+
+
+
+
+
+
+                // $notification = Notification::fromArray([
+                //     'title' => $title,
+                //     'body' => $body,
+                //     'image' => $image,
+                //     "click_action" => $click_action,
+                //     "url" => $click_action,
+                //     "link" => $click_action,
+                // ]);
+
+                // $message = CloudMessage::withTarget('token', $key)
+                //     ->withNotification($notification);
+
+                // try {
+                //     $fcm->send($message);
+                //     echo 'notification sent';
+                //     //update status if send successfull
+                //     NotificationHistory::where('id', $data->id)->update(['status' => 1]);
+                // } catch (\Throwable $th) {
+
+                //     echo 'error sending notification check bug';
+                //     NotificationHistory::where('id', $data->id)->update(['status' => 2]);
+                //     // dump($th);
+                // }
             }
         } else {
             echo 'no pending notification found';

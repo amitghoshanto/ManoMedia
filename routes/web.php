@@ -42,22 +42,22 @@ Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
     Route::get('logout', [AuthController::class, 'logout'])->name('admin.logout');
 });
 
-Route::get('test', function (Messaging $fcm) {
-    $token = 'dir1cK7t7F4:APA91bEbFN2tK1Qc3EEyVJfANxFN1X7jAPp8ZszldqkjBEYJjHgNaFV7giZ1lDNLDYJo-kCg0I6RGbvPwO6F2r42lEZnzUq9zoz7SB-dfR7yRAMbGEUSUBBWat-Hijo-b-T56E8Psgn4';
+// Route::get('test', function (Messaging $fcm) {
+//     $token = 'dir1cK7t7F4:APA91bEbFN2tK1Qc3EEyVJfANxFN1X7jAPp8ZszldqkjBEYJjHgNaFV7giZ1lDNLDYJo-kCg0I6RGbvPwO6F2r42lEZnzUq9zoz7SB-dfR7yRAMbGEUSUBBWat-Hijo-b-T56E8Psgn4';
 
-    $webPushConfig = WebPushConfig::fromArray([
-        'notification' => [
-            'title' => __('Testing Firebase Click action for :app app', ['app' => date('Y-m-d H:i:s')]),
-            'body' => '$GOOG gained 11.80 points to close at 835.67, up 1.43% on the day.',
-            'icon' => 'https://raziul.dev/images/raziul-islam.webp',
-        ],
-        'fcm_options' => [
-            'link' => 'https://raziul.dev/simplify-slug-creation-for-eloquent-models',
-        ],
-    ]);
+//     $webPushConfig = WebPushConfig::fromArray([
+//         'notification' => [
+//             'title' => __('Testing Firebase Click action for :app app', ['app' => date('Y-m-d H:i:s')]),
+//             'body' => '$GOOG gained 11.80 points to close at 835.67, up 1.43% on the day.',
+//             'icon' => 'https://raziul.dev/images/raziul-islam.webp',
+//         ],
+//         'fcm_options' => [
+//             'link' => 'https://raziul.dev/simplify-slug-creation-for-eloquent-models',
+//         ],
+//     ]);
 
-    $message = CloudMessage::withTarget('token', $token)
-        ->withWebPushConfig($webPushConfig);
+//     $message = CloudMessage::withTarget('token', $token)
+//         ->withWebPushConfig($webPushConfig);
 
-    dd($fcm->send($message));
-});
+//     dd($fcm->send($message));
+// });
