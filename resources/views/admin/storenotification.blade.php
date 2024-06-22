@@ -49,7 +49,7 @@
                                 <div class="mb-3">
                                     <label class="form-label">Image Link</label>
                                     <input type="text" class="form-control" name="image"
-                                        value="{{ old('image', 'https://manomedia.shop/favicon/apple-icon-180x180.png') }}">
+                                        value="https://manomedia.shop/favicon/apple-icon-180x180.png">
 
                                 </div>
                                 <div class="mb-3">
