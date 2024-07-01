@@ -201,7 +201,6 @@ class HomeController extends Controller
     public function sendNotification(Messaging $fcm)
     {
 
-
         $data = NotificationHistory::where('status', 0)->where('notification_key', '!=', NULL)->get();
         if (count($data) > 0) {
             foreach ($data as $data) {
@@ -222,6 +221,8 @@ class HomeController extends Controller
                     ],
                 ]);
 
+                dump($webPushConfig);
+
                 $message = CloudMessage::withTarget('token', $token)
                     ->withWebPushConfig($webPushConfig);
 
@@ -236,35 +237,6 @@ class HomeController extends Controller
                     NotificationHistory::where('id', $data->id)->update(['status' => 2]);
                     dump($th);
                 }
-
-
-
-
-
-
-                // $notification = Notification::fromArray([
-                //     'title' => $title,
-                //     'body' => $body,
-                //     'image' => $image,
-                //     "click_action" => $click_action,
-                //     "url" => $click_action,
-                //     "link" => $click_action,
-                // ]);
-
-                // $message = CloudMessage::withTarget('token', $key)
-                //     ->withNotification($notification);
-
-                // try {
-                //     $fcm->send($message);
-                //     echo 'notification sent';
-                //     //update status if send successfull
-                //     NotificationHistory::where('id', $data->id)->update(['status' => 1]);
-                // } catch (\Throwable $th) {
-
-                //     echo 'error sending notification check bug';
-                //     NotificationHistory::where('id', $data->id)->update(['status' => 2]);
-                //     // dump($th);
-                // }
             }
         } else {
             echo 'no pending notification found';

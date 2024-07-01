@@ -1,12 +1,13 @@
 <?php
 
-use App\Http\Controllers\Admin\AuthController;
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\HomeController;
+use App\Models\NotificationKey;
 use Illuminate\Support\Facades\Route;
 use Kreait\Firebase\Contract\Messaging;
+use App\Http\Controllers\HomeController;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\WebPushConfig;
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\DashboardController;
 
 Route::controller(HomeController::class)->group(function () {
     Route::get('/', 'index')->name('home');
@@ -42,8 +43,11 @@ Route::middleware(['auth:admin'])->prefix('admin')->group(function () {
     Route::get('logout', [AuthController::class, 'logout'])->name('admin.logout');
 });
 
-// Route::get('test', function (Messaging $fcm) {
-//     $token = 'dir1cK7t7F4:APA91bEbFN2tK1Qc3EEyVJfANxFN1X7jAPp8ZszldqkjBEYJjHgNaFV7giZ1lDNLDYJo-kCg0I6RGbvPwO6F2r42lEZnzUq9zoz7SB-dfR7yRAMbGEUSUBBWat-Hijo-b-T56E8Psgn4';
+
+
+
+// Route::get('t1', function (Messaging $fcm) {
+//     $token = 'd8XaDwIOBeI:APA91bGa-mlwvgLMEkk3wKntDmQ2wxuHCcqthfO6NtWFculDUuI56PLQ6cA3oYcm1M10wBPeE5RxPgcO0GaQI3bkocBO8gjNEg1Kb8pehMYjWqGx91lU9iwiKiCpOT-4r2e_RXXzsRyR';
 
 //     $webPushConfig = WebPushConfig::fromArray([
 //         'notification' => [
